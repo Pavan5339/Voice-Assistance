@@ -1,0 +1,121 @@
+import openai
+import speech_recognition as sr
+import webbrowser
+import pyttsx3
+import sys
+import google.generativeai as genai
+import os
+
+import requests
+
+from gtts import gTTS
+import pygame
+import os
+
+
+system_content = "You are a virtual assistant named Amura skilled in general tasks like Alexa and Google Cloud. Give short responses please"
+# user_content=input("enter")
+def abcd(c):
+       
+        if "open google" in c.lower():
+            webbrowser.open("https://google.com")
+        elif "open facebook" in c.lower():
+            webbrowser.open("https://facebook.com")
+        elif "open youtube" in c.lower():
+            webbrowser.open("https://youtube.com")
+        elif "open linkedin" in c.lower():
+            webbrowser.open("https://linkedin.com")
+        elif "open games" in c.lower():
+            webbrowser.open("https://poki.com/")
+        elif "open whatsapp web" in c.lower():
+            webbrowser.open("https://web.whatsapp.com")
+        elif "open flipkart" in c.lower():
+            webbrowser.open("https://www.flipkart.com")
+        elif "open snapchat" in c.lower():
+            webbrowser.open("https://www.snapchat.com")
+        elif "open instagram" in c.lower():
+            webbrowser.open("https://www.instagram.com")
+        elif "open today's weather" in c.lower():
+            webbrowser.open("https://weather.com")
+        
+
+       
+        
+        
+        else:
+           os.environ["GOOGLE_API_KEY"] = "AIzaSyD52t1Al5cQ3AJ_Zbazy5eI_YN1GRUBYRs"
+           genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
+           model = genai.GenerativeModel("gemini-1.5-flash")
+            
+           response = model.generate_content(c)
+           print(response.text)
+           speak(response.text) 
+           print("AI/ML API:\n", response)
+
+# ... rest of your code
+
+# Configure your API key or credentials
+# (Refer to previous explanations for authentication)
+
+# Create a model instance
+           
+# Send a prompt (remove the content keyword argument)
+
+
+
+        
+
+        
+
+
+def speak(text):
+    tts = gTTS(text)
+    tts.save('temp.mp3') 
+
+    # Initialize Pygame mixer
+    pygame.mixer.init()
+
+    # Load the MP3 file
+    pygame.mixer.music.load('temp.mp3')
+
+    # Play the MP3 file
+    pygame.mixer.music.play()
+
+    # Keep the program running until the music stops playing
+    while pygame.mixer.music.get_busy():
+        pygame.time.Clock().tick(10)
+    
+    pygame.mixer.music.unload()
+    os.remove("temp.mp3") 
+
+if __name__ == "__main__":
+    speak("Initializing ....")
+    
+    while True: 
+        # Listen for the wake word "Jarvis"
+        # obtain audio from the microphone
+        
+         
+        print("recognizing...")
+        try:
+            with sr.Microphone(device_index=1) as source:
+                r = sr.Recognizer()
+                r.adjust_for_ambient_noise(source)
+                print("Listening...")
+                audio = r.listen(source, timeout=5,phrase_time_limit=5)
+            word = r.recognize_google(audio)
+            
+            if(word.lower() == "hello"):
+                speak("Ya")
+                # Listen for command
+                with sr.Microphone() as source:
+                    print("amura Active...")
+                    audio = r.listen(source)
+                    user_content = r.recognize_google(audio)
+                    print(user_content)
+                    abcd(user_content)
+        except Exception as e:
+            print(f"Error; {e}")
+        with sr.Microphone(device_index=1) as source:
+            if not source.stream:
+                raise RuntimeError("Microphone initialization failed: Audio stream is None.")
